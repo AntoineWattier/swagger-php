@@ -21,7 +21,7 @@ class InheritPropertiesTest extends SwaggerTestCase
         $analyser = new StaticAnalyser();
         $analysis = $analyser->fromFile(__DIR__ . '/Fixtures/Child.php');
         $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/GrandParent.php'));
-        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Parent.php'));
+        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Ancestor.php'));
         $analysis->process([
             new MergeIntoSwagger(),
             new AugmentDefinitions(),
@@ -33,7 +33,7 @@ class InheritPropertiesTest extends SwaggerTestCase
         $this->assertCount(1, $childDefinition->properties);
         $analysis->process(new InheritProperties());
         $this->assertCount(3, $childDefinition->properties);
-        
+
         $analysis->swagger->info = new Info(['title' => 'test', 'version' => 1]);
         $analysis->validate();
     }

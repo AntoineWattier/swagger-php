@@ -28,34 +28,34 @@ class AnalysisTest extends SwaggerTestCase
         $analysis->process();
         $this->assertSame(1, $counter);
     }
-    
+
     public function testGetSubclasses()
     {
         $analyser = new StaticAnalyser();
         $analysis = $analyser->fromFile(__DIR__ . '/Fixtures/Child.php');
         $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/GrandParent.php'));
-        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Parent.php'));
-        
+        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Ancestor.php'));
+
         $this->assertCount(3, $analysis->classes, '3 classes should\'ve been detected');
-        
+
         $subclasses = $analysis->getSubClasses('\SwaggerFixtures\GrandParent');
         $this->assertCount(2, $subclasses, 'GrandParent has 2 subclasses');
-        $this->assertSame(['\SwaggerFixtures\Parent', '\AnotherNamespace\Child'], array_keys($subclasses));
-        $this->assertSame(['\AnotherNamespace\Child'], array_keys($analysis->getSubClasses('\SwaggerFixtures\Parent')));
+        $this->assertSame(['\SwaggerFixtures\Ancestor', '\AnotherNamespace\Child'], array_keys($subclasses));
+        $this->assertSame(['\AnotherNamespace\Child'], array_keys($analysis->getSubClasses('\SwaggerFixtures\Ancestor')));
     }
-    
+
     public function testGetParentClasses()
     {
         $analyser = new StaticAnalyser();
         $analysis = $analyser->fromFile(__DIR__ . '/Fixtures/Child.php');
         $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/GrandParent.php'));
-        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Parent.php'));
-        
+        $analysis->addAnalysis($analyser->fromFile(__DIR__ . '/Fixtures/Ancestor.php'));
+
         $this->assertCount(3, $analysis->classes, '3 classes should\'ve been detected');
-        
+
         $superclasses = $analysis->getSuperClasses('\AnotherNamespace\Child');
         $this->assertCount(2, $superclasses, 'Child has a chain of 2 super classes');
-        $this->assertSame(['\SwaggerFixtures\Parent', '\SwaggerFixtures\GrandParent'], array_keys($superclasses));
-        $this->assertSame(['\SwaggerFixtures\GrandParent'], array_keys($analysis->getSuperClasses('\SwaggerFixtures\Parent')));
+        $this->assertSame(['\SwaggerFixtures\Ancestor', '\SwaggerFixtures\GrandParent'], array_keys($superclasses));
+        $this->assertSame(['\SwaggerFixtures\GrandParent'], array_keys($analysis->getSuperClasses('\SwaggerFixtures\Ancestor')));
     }
 }

@@ -138,11 +138,12 @@ set_exception_handler(function ($exception) {
     exit($exception->getCode() ?: 1);
 });
 \Swagger\Logger::getInstance()->log = function ($entry, $type) {
-    $type = $type === E_USER_NOTICE ? 'INFO' : 'WARN';
+
     if ($entry instanceof Exception) {
         $entry = $entry->getMessage();
     }
-    error_log('[' . $type . '] ' . $entry . PHP_EOL);
+
+    throw new Exception('Swagger Schema Not Valid: '. $entry . PHP_EOL);
 };
 
 
